@@ -137,7 +137,7 @@ export const formatVaultList = (
 export const getDerivedVersionFromTime = (): Version => {
   const secondsNow = getSecondsSinceEpoch()
   const daysSinceStart = Math.floor((secondsNow - START_TIME) / SECONDS_PER_DAY)
-  const hourOfDay = Math.floor(secondsNow / SECONDS_PER_HOUR)
+  const hourOfDay = Math.floor(secondsNow / SECONDS_PER_HOUR) % 24
   return { major: 1, minor: daysSinceStart, patch: hourOfDay }
 }
 
