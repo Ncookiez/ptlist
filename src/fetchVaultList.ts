@@ -41,9 +41,9 @@ export const fetchVaultList = async (
             timestamp: new Date().toISOString()
           }
 
-          await cacheVaultList(event, cachedVaultList, walletAddress)
+          await cacheVaultList(event, updatedCachedVaultList, walletAddress)
 
-          return cachedVaultList
+          return updatedCachedVaultList
         }
       } else {
         return cachedVaultList

@@ -35,7 +35,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@generationsoftware/hyperstructure-client-js": "^1.4.1",
+    "@generationsoftware/hyperstructure-client-js": "^1.5.0",
     "viem": "^1.16.6"
   }
 }
