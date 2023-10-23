@@ -29,14 +29,13 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20230518.0",
     "@trivago/prettier-plugin-sort-imports": "^4.1.0",
-    "@types/node": "^17.0.45",
+    "@types/node": "^20.8.7",
     "prettier": "^2.8.4",
-    "tslib": "^2.5.0",
-    "tsup": "^6.6.3",
-    "typescript": "^5.0.4"
+    "tsup": "^7.2.0",
+    "typescript": "^5.2.2"
   },
   "dependencies": {
     "@generationsoftware/hyperstructure-client-js": "^1.4.1",
-    "viem": "^1.10.9"
+    "viem": "^1.16.6"
   }
 }
