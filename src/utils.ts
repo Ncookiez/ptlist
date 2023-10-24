@@ -3,8 +3,10 @@ import { SUPPORTED_NETWORK } from './types'
 import {
   getSecondsSinceEpoch,
   getVaultId,
+  NETWORK,
   SECONDS_PER_DAY,
   SECONDS_PER_HOUR,
+  shorten,
   TokenWithSupply,
   TWAB_CONTROLLER_ADDRESSES,
   VaultInfo,
@@ -13,6 +15,7 @@ import {
   Version
 } from '@generationsoftware/hyperstructure-client-js'
 import { Address, PublicClient } from 'viem'
+import { normalize } from 'viem/ens'
 
 export const getVaultList = async (walletAddress: Address) => {
   const vaultInfo: VaultInfo[] = []
@@ -31,7 +34,13 @@ export const getVaultList = async (walletAddress: Address) => {
   const shareData = await vaults.getShareData()
   const tokenData = await vaults.getTokenData()
 
-  const vaultList = formatVaultList(vaultInfo, walletAddress, shareData, tokenData)
+  const ens = (await getEnsName(walletAddress)) ?? undefined
+  const logoURI = !!ens ? (await getEnsAvatar(ens)) ?? undefined : undefined
+
+  const vaultList = formatVaultList(vaultInfo, walletAddress, shareData, tokenData, {
+    ens,
+    logoURI
+  })
 
   return vaultList
 }
@@ -93,13 +102,15 @@ export const getVaultsFromTwab = async (
 export const formatVaultList = (
   allVaultInfo: VaultInfo[],
   walletAddress: Address,
-  allShareData?: { [vaultId: string]: TokenWithSupply },
-  allTokenData?: { [vaultId: string]: TokenWithSupply }
+  allShareData: { [vaultId: string]: TokenWithSupply },
+  allTokenData: { [vaultId: string]: TokenWithSupply },
+  options?: { ens?: string; logoURI?: string }
 ): VaultList => {
-  const name = `${walletAddress}'s Vault List`
+  const name = `${!!options?.ens ? options.ens : shorten(walletAddress)}'s Vault List`
   const version = getDerivedVersionFromTime()
   const timestamp = new Date().toISOString()
   const keywords = ['pooltogether', 'v5', 'erc4626', 'ptlist']
+  const logoURI = options?.logoURI ?? 'https://www.ptlist.xyz/favicon.svg'
 
   const tokens: VaultInfo[] = []
 
@@ -107,8 +118,8 @@ export const formatVaultList = (
     const vaultInfo = { ...vault }
 
     const vaultId = getVaultId(vault)
-    const shareData = allShareData?.[vaultId]
-    const tokenData = allTokenData?.[vaultId]
+    const shareData = allShareData[vaultId]
+    const tokenData = allTokenData[vaultId]
 
     if (!!shareData) {
       vaultInfo.name = shareData.name
@@ -129,7 +140,7 @@ export const formatVaultList = (
     tokens.push(vaultInfo)
   })
 
-  const vaultList: VaultList = { name, version, timestamp, keywords, tokens }
+  const vaultList: VaultList = { name, version, timestamp, keywords, logoURI, tokens }
 
   return vaultList
 }
@@ -152,4 +163,20 @@ export const isDifferentList = (a: VaultList, b: VaultList) => {
 export const getVaultListId = (vaultList: VaultList) => {
   const vaultIds = vaultList.tokens.map((vault) => getVaultId(vault))
   return vaultIds.join('')
+}
+
+export const isEns = (val: string) => {
+  return val.endsWith('.eth')
+}
+
+export const getEnsAddress = async (ens: string) => {
+  return await VIEM_CLIENTS[NETWORK.mainnet].getEnsAddress({ name: normalize(ens) })
+}
+
+export const getEnsName = async (address: Address) => {
+  return await VIEM_CLIENTS[NETWORK.mainnet].getEnsName({ address })
+}
+
+export const getEnsAvatar = async (ens: string) => {
+  return await VIEM_CLIENTS[NETWORK.mainnet].getEnsAvatar({ name: normalize(ens) })
 }
