@@ -22,7 +22,10 @@ export const handleRequest = async (event: FetchEvent): Promise<Response> => {
       const vaultList = await fetchVaultList(event, walletAddress.toLowerCase() as Address)
 
       if (!!vaultList) {
-        return new Response(JSON.stringify(vaultList), {
+        const name = url.searchParams.get('name')
+        const response = JSON.stringify(!!name ? { ...vaultList, name: name } : vaultList)
+
+        return new Response(response, {
           ...DEFAULT_HEADERS,
           status: 200
         })
