@@ -157,7 +157,7 @@ export const getVaultListTimestamp = (vaultList: VaultList): number => {
 }
 
 export const isDifferentList = (a: VaultList, b: VaultList) => {
-  return getVaultListId(a) === getVaultListId(b)
+  return getVaultListId(a) !== getVaultListId(b)
 }
 
 export const getVaultListId = (vaultList: VaultList) => {
