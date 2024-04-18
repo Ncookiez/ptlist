@@ -4,11 +4,11 @@ import {
   getSecondsSinceEpoch,
   getVaultId,
   NETWORK,
+  PRIZE_POOLS,
   SECONDS_PER_DAY,
   SECONDS_PER_HOUR,
   shorten,
   TokenWithSupply,
-  TWAB_CONTROLLER_ADDRESSES,
   VaultInfo,
   VaultList,
   Vaults,
@@ -53,8 +53,11 @@ export const getVaultsFromTwab = async (
   const vaultAddresses = new Set<Address>()
   const ignoreList = new Set<Address>()
 
+  const twabControllerAddress = PRIZE_POOLS.find((pool) => pool.chainId === chainId)?.options
+    .twabControllerAddress
+
   const recordedObservations = await publicClient.getLogs({
-    address: TWAB_CONTROLLER_ADDRESSES[chainId],
+    address: twabControllerAddress,
     event: {
       inputs: [
         { indexed: true, internalType: 'address', name: 'vault', type: 'address' },

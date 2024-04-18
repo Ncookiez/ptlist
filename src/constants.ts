@@ -19,7 +19,7 @@ export const SUPPORTED_NETWORKS = [NETWORK.optimism] as const
 export const START_TIME = 1_697_500_800
 
 export const START_BLOCKS: Record<SUPPORTED_NETWORK, bigint> = {
-  [NETWORK.optimism]: 111_036_194n
+  [NETWORK.optimism]: 118_900_000n
 }
 
 export const VIEM_CLIENTS: Record<NETWORK.mainnet | SUPPORTED_NETWORK, PublicClient> = {
