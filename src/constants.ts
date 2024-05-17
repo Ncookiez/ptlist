@@ -1,7 +1,7 @@
 import { SUPPORTED_NETWORK } from './types'
 import { NETWORK } from '@generationsoftware/hyperstructure-client-js'
 import { createPublicClient, http, PublicClient } from 'viem'
-import { mainnet, optimism } from 'viem/chains'
+import { base, mainnet, optimism } from 'viem/chains'
 
 export const DEFAULT_HEADERS = {
   headers: {
@@ -14,12 +14,13 @@ export const DEFAULT_HEADERS = {
   }
 }
 
-export const SUPPORTED_NETWORKS = [NETWORK.optimism] as const
+export const SUPPORTED_NETWORKS = [NETWORK.optimism, NETWORK.base] as const
 
 export const START_TIME = 1_697_500_800
 
 export const START_BLOCKS: Record<SUPPORTED_NETWORK, bigint> = {
-  [NETWORK.optimism]: 118_900_000n
+  [NETWORK.optimism]: 118_900_000n,
+  [NETWORK.base]: 14_506_800n
 }
 
 export const VIEM_CLIENTS: Record<NETWORK.mainnet | SUPPORTED_NETWORK, PublicClient> = {
@@ -30,5 +31,9 @@ export const VIEM_CLIENTS: Record<NETWORK.mainnet | SUPPORTED_NETWORK, PublicCli
   [NETWORK.optimism]: createPublicClient({
     chain: optimism,
     transport: http(OPTIMISM_RPC_URL)
+  }) as PublicClient,
+  [NETWORK.base]: createPublicClient({
+    chain: base,
+    transport: http(BASE_RPC_URL)
   }) as PublicClient
 }
